@@ -134,11 +134,11 @@ Before generating the final response, you must perform a self-check step-by-step
         },
         {
             name: 'backgroundInfo',
-            label: '设定信息（传图/表）',
+            label: '设定信息（角色卡）',
             type: 'file',
             accept: '.json,.png',
             required: false,
-            description: '上传角色卡（支持自动提取 Basic 设定）'
+            description: '上传角色卡，支持PNG和json格式，自动提取角色设定和世界书'
         },
         {
             name: 'backgroundText',
