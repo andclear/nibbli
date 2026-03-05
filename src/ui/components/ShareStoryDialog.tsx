@@ -48,8 +48,10 @@ interface Props {
  */
 function parseTxtContent(text: string): ParsedStory[] {
     const stories: ParsedStory[] = [];
+    // 统一换行符：Windows(\r\n) 和旧 Mac(\r) 全部转为 \n，避免正则匹配失败
+    const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     // 按 "### Title" 分割多个小剧场
-    const blocks = text.split(/(?=^### Title)/m).filter(b => b.trim());
+    const blocks = normalized.split(/(?=^### Title)/m).filter(b => b.trim());
 
     for (const block of blocks) {
         const lines = block.split('\n');
