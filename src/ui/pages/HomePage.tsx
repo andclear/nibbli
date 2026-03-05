@@ -31,7 +31,6 @@ import {
     removeCustomPlugin,
     CUSTOM_CATEGORY,
 } from '@/core/pluginLoader';
-import { PromptEditorDialog } from '@/ui/components/PromptEditorDialog';
 import type { ToolConfig } from '@/core/types';
 
 /** 分类图标映射 */
@@ -198,10 +197,9 @@ export function HomePage() {
                                 key={tool.id}
                                 className="group relative border rounded-lg p-4 bg-card hover:shadow-md hover:border-primary/30 transition-all duration-200"
                             >
-                                {/* 右上角操作区：悬浮时显示编辑 + 删除 */}
-                                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                                    <PromptEditorDialog tool={tool} triggerVariant="icon" />
-                                    {isCustomPlugin(tool) && (
+                                {/* 右上角操作区：自定义插件显示删除按钮 */}
+                                {isCustomPlugin(tool) && (
+                                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                                         <button
                                             onClick={(e) => {
                                                 e.preventDefault();
@@ -213,8 +211,8 @@ export function HomePage() {
                                         >
                                             <Trash2 className="h-3.5 w-3.5" />
                                         </button>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
 
                                 <Link to={tool.id === 'qr_generator' ? '/quick-reply-generator' : `/tool/${tool.id}`} className="block space-y-2">
                                     <div className="flex items-center justify-between mb-2">
