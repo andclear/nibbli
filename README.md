@@ -7,7 +7,7 @@
 ## ✨ 核心特性
 
 - **🧩 插件系统** — 单文件 `.js` 插件架构，配置/提示词/代码合一，支持导入、导出与在线编辑
-- **🤖 多模型兼容** — 兼容所有 OpenAI 格式 API（OpenAI / DeepSeek / Claude 等），自动拉取模型列表
+- **🤖 多模型兼容** — 兼容所有 OpenAI 格式 API（OpenAI / DeepSeek等），自动拉取模型列表
 - **🎭 内置工具集** — 角色设定、世界书、首条消息、正则脚本、风格包等角色卡全链路工具
 - **📋 快速回复生成器** — 可视化配置 SillyTavern Quick Reply 按钮，实时预览与 JSON 导出
 - **🎬 小剧场** — 社区创意分享空间，支持投稿与浏览
@@ -30,6 +30,12 @@
 | PWA | vite-plugin-pwa + Workbox |
 
 ## 🚀 快速开始
+
+你可以直接通过：
+
+https://tools.laopobao.online/
+
+来使用小兔几工具。
 
 ### 环境要求
 
