@@ -45,25 +45,51 @@ interface Props {
 
 /**
  * 解析 TXT 文件内容为小剧场条目数组
+ * 使用逐行状态机解析，避免内容中的 ### 被误判为分隔符
+ * 仅当 "### xxx" 行后紧跟 "Title:" 行时，才视为新小剧场的开始
  */
 function parseTxtContent(text: string): ParsedStory[] {
     const stories: ParsedStory[] = [];
-    // 统一换行符：Windows(\r\n) 和旧 Mac(\r) 全部转为 \n，避免正则匹配失败
+    // 统一换行符
     const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    // 按 "### Title" 分割多个小剧场
-    const blocks = normalized.split(/(?=^### Title)/m).filter(b => b.trim());
+    const allLines = normalized.split('\n');
 
-    for (const block of blocks) {
-        const lines = block.split('\n');
+    // 先扫描出所有小剧场的起始行号
+    const startIndices: number[] = [];
+    for (let i = 0; i < allLines.length; i++) {
+        if (allLines[i].trim().startsWith('### ')) {
+            // 下一行存在且以 "Title:" 开头，才判定为新小剧场
+            const nextLine = i + 1 < allLines.length ? allLines[i + 1].trim() : '';
+            if (nextLine.startsWith('Title:')) {
+                startIndices.push(i);
+            }
+        }
+    }
+
+    // 按起始行号切割出每个小剧场的行范围
+    for (let idx = 0; idx < startIndices.length; idx++) {
+        const start = startIndices[idx];
+        const end = idx + 1 < startIndices.length ? startIndices[idx + 1] : allLines.length;
+        const blockLines = allLines.slice(start, end);
+
         let title = '';
         let category = '';
         let desc = '';
         const contentLines: string[] = [];
         let inContent = false;
 
-        for (const line of lines) {
+        for (const line of blockLines) {
             const trimmed = line.trim();
-            if (trimmed.startsWith('### Title')) continue;
+
+            // 跳过 ### 标题行（已用于定位，标题从 Title: 行取）
+            if (trimmed.startsWith('### ') && !inContent) {
+                // 如果 ### 后面不是 "Title"，也提取作为备选标题
+                const headerTitle = trimmed.replace(/^###\s+/, '');
+                if (headerTitle && headerTitle !== 'Title') {
+                    title = headerTitle;
+                }
+                continue;
+            }
 
             if (!inContent) {
                 if (trimmed.startsWith('Title:')) {
@@ -73,7 +99,6 @@ function parseTxtContent(text: string): ParsedStory[] {
                 } else if (trimmed.startsWith('Desc:')) {
                     desc = trimmed.replace(/^Desc:\s*/, '');
                 } else if (trimmed === '') {
-                    // 空行后面是内容区
                     if (title) inContent = true;
                 }
             } else {
@@ -82,7 +107,6 @@ function parseTxtContent(text: string): ParsedStory[] {
         }
 
         if (title && contentLines.length > 0) {
-            // TXT 批量上传时，category 作为 tag 存入，分类不指定
             const tags = category ? [category] : [];
             stories.push({
                 title,
