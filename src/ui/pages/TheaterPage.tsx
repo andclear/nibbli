@@ -21,7 +21,7 @@ interface StoryItem {
 }
 
 /** 每页显示条数 */
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 36;
 
 /**
  * 预定义分类列表
@@ -91,6 +91,34 @@ function downloadTxtFile(content: string, filename: string) {
 }
 
 /** 生成时间戳字符串：年月日时分秒 */
+/**
+ * 带种子的伪随机数生成器（mulberry32）
+ */
+function mulberry32(seed: number) {
+    return function () {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+/**
+ * 每日洗牌：使用当天日期作为种子，同一天内顺序固定，每天自动变化
+ */
+function dailyShuffle<T>(arr: T[]): T[] {
+    if (arr.length <= 1) return arr;
+    const d = new Date();
+    const daySeed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    const rand = mulberry32(daySeed);
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 function getTimestamp(): string {
     const d = new Date();
     const pad = (n: number) => String(n).padStart(2, '0');
@@ -151,10 +179,11 @@ export function TheaterPage() {
     // 只显示有内容的分类
     const visibleCategories = CATEGORIES.filter(cat => categoryCounts[cat] > 0);
 
-    // 按分类筛选
+    // 每日洗牌 + 按分类筛选
+    const shuffledStories = useMemo(() => dailyShuffle(stories), [stories]);
     const filteredStories = activeCategory === '全部'
-        ? stories
-        : stories.filter(s => s.category === activeCategory);
+        ? shuffledStories
+        : shuffledStories.filter(s => s.category === activeCategory);
 
     // 分页计算
     const totalPages = Math.max(1, Math.ceil(filteredStories.length / PAGE_SIZE));

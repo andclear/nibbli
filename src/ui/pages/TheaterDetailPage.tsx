@@ -184,7 +184,7 @@ ${story.content}`;
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div className="min-w-0">
-                        <h1 className="text-2xl font-bold truncate">小剧场扩写工具</h1>
+                        <h1 className="text-2xl font-bold truncate">小剧场详情</h1>
                         <p className="text-sm text-muted-foreground line-clamp-1 mt-1">{story.title}</p>
                     </div>
                 </div>

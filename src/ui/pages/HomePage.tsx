@@ -217,11 +217,10 @@ export function HomePage() {
                                 </div>
 
                                 <Link to={tool.id === 'qr_generator' ? '/quick-reply-generator' : `/tool/${tool.id}`} className="block space-y-2">
-                                    <div className="flex items-center justify-between mb-2 pr-14">
+                                    <div className="flex items-center justify-between mb-2">
                                         <h3 className="font-semibold text-sm leading-tight group-hover:text-primary transition-colors truncate">
                                             {tool.name}
                                         </h3>
-                                        {/* 作者信息移至标题同行右侧 */}
                                         {tool.author && (
                                             <span className="text-[10px] text-muted-foreground/80 flex items-center gap-1 shrink-0 bg-muted/30 px-1.5 py-0.5 rounded">
                                                 <Users className="h-3 w-3" />
@@ -235,16 +234,13 @@ export function HomePage() {
                                         {tool.description}
                                     </p>
 
-                                    {/* 底部信息：分类图标 + 版本 + 箭头 */}
+                                    {/* 底部信息：分类图标 + 作者 + 箭头 */}
                                     <div className="flex items-center justify-between pt-2">
                                         <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
                                             {getCategoryIcon(tool.category || '通用工具')}
                                             {tool.category || '通用工具'}
                                         </span>
                                         <div className="flex items-center gap-1.5">
-                                            <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
-                                                v{tool.version}
-                                            </span>
                                             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                                         </div>
                                     </div>
