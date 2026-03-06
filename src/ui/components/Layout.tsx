@@ -1,14 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Settings, Home, History, Drama, Menu } from 'lucide-react';
+import { Settings, Home, History, Drama } from 'lucide-react';
 import { Toaster } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 
 export function Layout() {
     const location = useLocation();
@@ -20,59 +13,29 @@ export function Layout() {
         { name: '设置', path: '/settings', icon: Settings },
     ];
 
+    const isActive = (path: string) =>
+        location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
+
     return (
         <div className="min-h-screen relative flex flex-col bg-background text-foreground">
             {/* 顶部导航栏 */}
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        {/* 移动端汉堡菜单移到左侧 */}
-                        <div className="md:hidden">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-9 w-9 -ml-2 mr-1">
-                                        <Menu className="h-5 w-5" />
-                                        <span className="sr-only">打开菜单</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="w-48">
-                                    {navItems.map((item) => {
-                                        const Icon = item.icon;
-                                        const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
-                                        return (
-                                            <DropdownMenuItem key={item.path} asChild>
-                                                <Link
-                                                    to={item.path}
-                                                    className={`w-full flex items-center gap-2 cursor-pointer ${isActive ? 'text-primary font-medium' : ''}`}
-                                                >
-                                                    <Icon className="h-4 w-4" />
-                                                    {item.name}
-                                                </Link>
-                                            </DropdownMenuItem>
-                                        );
-                                    })}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-
-                        <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-                            <span className="text-2xl">🐰</span>
-                            <span className="font-bold hidden sm:inline-block">小兔几</span>
-                        </Link>
-                    </div>
+                    <Link to="/" className="flex items-center gap-2 font-bold text-lg">
+                        <span className="text-2xl">🐰</span>
+                        <span className="font-bold hidden sm:inline-block">小兔几</span>
+                    </Link>
 
                     <div className="flex items-center gap-2">
-                        {/* 桌面端导航 */}
+                        {/* 桌面端导航（md 以上显示） */}
                         <nav className="hidden md:flex items-center gap-2">
                             {navItems.map((item) => {
                                 const Icon = item.icon;
-                                const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
-
                                 return (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${isActive
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${isActive(item.path)
                                             ? 'bg-primary/10 text-primary font-medium'
                                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                             }`}
@@ -83,8 +46,6 @@ export function Layout() {
                                 );
                             })}
                         </nav>
-
-                        {/* 已将移动端汉堡菜单移至左侧 */}
 
                         {/* Discord 链接 */}
                         <a
@@ -107,13 +68,37 @@ export function Layout() {
                 </div>
             </header>
 
-            {/* 主内容区 */}
-            <main className="flex-1 container mx-auto px-4 py-6">
+            {/* 主内容区（移动端为底部导航留出空间） */}
+            <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
                 <Outlet />
             </main>
+
+            {/* 移动端固定底部导航栏（md 以下显示） */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const active = isActive(item.path);
+                        return (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${active
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground'
+                                    }`}
+                            >
+                                <Icon className={`h-5 w-5 ${active ? 'stroke-[2.5]' : ''}`} />
+                                <span className={`text-[10px] ${active ? 'font-semibold' : ''}`}>{item.name}</span>
+                            </Link>
+                        );
+                    })}
+                </div>
+            </nav>
 
             {/* 全局 Toast 容器 */}
             <Toaster position="top-center" richColors visibleToasts={5} gap={8} expand closeButton duration={3000} />
         </div>
     );
 }
+
