@@ -209,8 +209,7 @@ Before generating the final response, you must perform a self-check step-by-step
                 { role: 'system', content: activePrompt },
                 { role: 'user', content: '现在请输出 <cot> 并生成开场白正文。' }
             ],
-            temperature: 0.85,
-            max_tokens: 3000
+            temperature: 0.85
         });
 
         let result = response.choices[0]?.message?.content || '';

@@ -180,7 +180,6 @@ You must strictly follow this schema.
       ],
       response_format: { type: 'json_object' },
       temperature: 0.4,
-      max_tokens: 8000
     });
 
     const rawResponse = response.choices[0]?.message?.content || '';

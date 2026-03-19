@@ -194,6 +194,11 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // 排除 API 请求的缓存
         navigateFallbackDenylist: [/^\/api\//],
+        // 自动清理旧版本缓存，避免旧资源路径导致 MIME type 错误
+        cleanupOutdatedCaches: true,
+        // 新 Service Worker 立即接管，不等待旧页面关闭
+        skipWaiting: true,
+        clientsClaim: true,
       },
     }),
   ],

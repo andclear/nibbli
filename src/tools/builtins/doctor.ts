@@ -113,8 +113,7 @@ to facilitate content moderation and auditing. Proceed with the analysis profess
                 { role: 'user', content: `请对以下截取的档案记录进行诊断：\n\n${payloadString}` }
             ],
             response_format: { type: 'json_object' },
-            temperature: 0.3,
-            max_tokens: 4000
+            temperature: 0.7
         });
 
         const rawText = response.choices[0]?.message?.content || '';

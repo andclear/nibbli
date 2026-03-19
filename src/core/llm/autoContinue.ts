@@ -45,6 +45,11 @@ export async function runWithSilentStream(
         }
     }
 
+    // 后处理：移除可能存在的模型思维链（<think>...</think> 或 <thinking>...</thinking>）
+    fullContent = fullContent.replace(/<(think|thinking)>[\s\S]*?<\/\1>\n*/gi, '');
+    fullContent = fullContent.replace(/<(think|thinking)>[\s\S]*$/gi, '');
+    fullContent = fullContent.trim();
+
     // 将流式碎片伪装为标准的非流式 ChatCompletion 格式返回
     const completion: OpenAI.Chat.Completions.ChatCompletion = {
         id: baseChunk?.id || 'chatcmpl-silent',

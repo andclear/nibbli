@@ -57,8 +57,7 @@ Output directly without any explanation or markdown code block.`,
                 { role: 'system', content: activePrompt },
                 { role: 'user', content: userMessage }
             ],
-            temperature: 0.3,
-            max_tokens: 4000
+            temperature: 0.7
         });
 
         let result = response.choices[0]?.message?.content || '';

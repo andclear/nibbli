@@ -96,10 +96,18 @@ export function SettingsPage() {
 
             toast.success(`成功获取 ${modelsList.length} 个可用模型`);
 
-            // 自动把新获取的模型加入"已选择"列表，或者至少让用户去勾选
-            if (selectedModels.length === 0 && modelsList.length > 0) {
+            // 过滤掉不在新模型列表中的旧 selectedModels（解决更换供应商后旧模型残留问题）
+            const validModels = selectedModels.filter(m => modelsList.includes(m));
+            if (validModels.length !== selectedModels.length) {
+                setSelectedModels(validModels);
+            }
+            // 如果过滤后没有有效模型，自动选中新列表的第一个
+            if (validModels.length === 0 && modelsList.length > 0) {
                 setSelectedModels([modelsList[0]]);
                 setDefaultModel(modelsList[0]);
+            } else if (defaultModel && !modelsList.includes(defaultModel)) {
+                // 默认模型不在新列表中，重置为已选模型的第一个
+                setDefaultModel(validModels[0] || '');
             }
         } catch (error: unknown) {
             // 错误已在 withErrorHandling 拦截
@@ -140,7 +148,6 @@ export function SettingsPage() {
                 const response = await tempClient.chat.completions.create({
                     model: model,
                     messages: [{ role: 'user', content: 'hello' }],
-                    max_tokens: 5,
                 });
 
                 if (response.choices && response.choices.length > 0) {

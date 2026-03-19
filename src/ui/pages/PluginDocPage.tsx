@@ -168,8 +168,7 @@ var response = await context.llmClient.chat.completions.create({
         { role: 'system', content: context.systemPrompt },
         { role: 'user', content: inputs.userInput }
     ],
-    temperature: 0.7,
-    max_tokens: 2000
+    temperature: 0.7
 });
 return response.choices[0].message.content;
 \`\`\`

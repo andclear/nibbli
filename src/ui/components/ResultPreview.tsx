@@ -239,7 +239,7 @@ export function ResultPreview({ result, error, coreContext }: ResultPreviewProps
             </div>
             <div className="flex-1 p-3 md:p-6 overflow-y-auto relative flex flex-col">
                 {isMarkdown ? (
-                    <article className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:text-foreground">
+                    <article className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:text-foreground prose-pre:whitespace-pre-wrap prose-pre:break-words">
                         <ReactMarkdown>{finalDisplay}</ReactMarkdown>
                     </article>
                 ) : (
